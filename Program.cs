@@ -6,8 +6,8 @@ await Host.CreateDefaultBuilder()
         services.AddHostedService<ChatLogWorker>();
         services.AddSingleton<IPendingMeridianOrders, PendingMeridianOrders>();
         services.AddSingleton<IServerService, ServerService>();
-        services.AddSingleton<IChatMessageFactory, ChatMessageFactory>();
-        services.AddSingleton<ServerConnection>(
+        services.AddSingleton<IChatMessageFactory, ChatMessageFactory>();        
+        services.AddSingleton(
             _ => JsonConvert.DeserializeObject<ServerConnection>(File.ReadAllText("./Configurations/ServerConnection.json")));
     })
     .Build()

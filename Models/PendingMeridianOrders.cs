@@ -16,19 +16,39 @@ internal sealed record PendingMeridianOrders : IPendingMeridianOrders
 
     public void UpdateLogoffStatus(LogoffRecord logoffRecord)
     {
-        this.Orders
-            .Where(order => order.Role.GRoleBase.Id == logoffRecord.IdRoleLogoff)
-            .ToList()
-            .ForEach(order => order.IsLoggedOff = true);
+        foreach (var order in this.Orders)
+            if (logoffRecord.IdRoleLogoff.Equals(order.IssuerRoleId))
+                order.IsLoggedOff = true;
 
         _logger.Write($"Logoff notification received for player ID {logoffRecord.IdRoleLogoff}", LogLevel.Information);
     }
 
-    public void UpdateLogoffStatus(IEnumerable<LogoffRecord> logoffRecords) => logoffRecords.ToList().ForEach(this.UpdateLogoffStatus);
+    public void UpdateLogoffStatus(IEnumerable<LogoffRecord> logoffRecords)
+    {
+        foreach (var logoffRecord in logoffRecords)
+            this.UpdateLogoffStatus(logoffRecord);
+    }
     public void RemoveOrderByReference(MeridianOrder order)
     {
-        Orders.Where(o => o.Role.GRoleBase.Id.Equals(order.Role.GRoleBase.Id))
-              .ToList()
-              .ForEach(o => Orders.Remove(o));
+        List<MeridianOrder> recordsToRemove = new();
+
+        for (int i = 0; i < Orders.Count; i++)
+            if (Orders[i].Role.GRoleBase.Id.Equals(order.IssuerRoleId))
+                recordsToRemove.Add(Orders[i]);
+
+        foreach (var recordToRemove in recordsToRemove)
+            this.Orders.Remove(recordToRemove);
+    }
+    public void UpdateDeliveredStatus(int issuerRoleId, bool deliveredStatus)
+    {
+        var orders = this.Orders.Where(order => order.IssuerRoleId.Equals(issuerRoleId));
+
+        foreach (var order in orders)
+            order.IsDelivered = deliveredStatus;
+    }
+
+    public List<MeridianOrder> GetDeliveredOrders()
+    {
+        return this.Orders.Where(order => order.IsDelivered).ToList();
     }
 }

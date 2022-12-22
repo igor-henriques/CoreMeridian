@@ -8,9 +8,9 @@ public static class LogWriter
         {
             logger.Log(logLevel, logMessage);
 
-            using StreamWriter txtWriter = File.AppendText("./log.txt");
+            using StreamWriter txtWriter = File.AppendText(LogFilePath.OutputLogFilePath);
 
-            txtWriter.Write("\r\nLog Entry:");
+            txtWriter.Write("\r\nLog Entry: ");
             txtWriter.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString());
             txtWriter.WriteLine("{0}", logMessage);
             txtWriter.WriteLine("-------------------------------------------------------");

@@ -24,11 +24,11 @@ internal sealed class MeridianWorker : BackgroundService
         {
             try
             {
+                var ordersToRemove = new List<MeridianOrder>();
                 var readyPendingOrders = _pendingMeridianOrders.Orders.Where(order => order.IsLoggedOff);
 
                 if (!readyPendingOrders.Any())
                 {
-                    _logger.LogInformation("None order is ready to be delivered");
                     await Task.Delay(1000, stoppingToken);
                     continue;
                 }
@@ -40,8 +40,8 @@ internal sealed class MeridianWorker : BackgroundService
 
                     if (itemsFound.Length <= 0)
                     {
-                        _logger.Write($"Weren't found any item Id {MeridianItem.Id} on player inventory when trying to deliver meridian after log off. Probably the player tried to remove the item from inventory.", LogLevel.Critical);
-                        _pendingMeridianOrders.Orders.Remove(readyOrder);
+                        _logger.Write($"Weren't found any item id {MeridianItem.Id} on player id {readyOrder.IssuerRoleId} inventory when trying to deliver meridian after log off. Probably the player tried to remove the item from inventory.", LogLevel.Critical);
+                        ordersToRemove.Add(readyOrder);
                         continue;
                     }
 
@@ -55,13 +55,17 @@ internal sealed class MeridianWorker : BackgroundService
                     if (!response)
                     {
                         _logger.Write($"Failed to deliver meridian to player {readyOrder.Role.GRoleBase.Id}", LogLevel.Critical);
-                        _serverService.SendPrivateMessage(readyOrder.Role.GRoleBase.Id, "Falha ao entregar meridiano. Entre em contato com a administração.");
-                        _pendingMeridianOrders.RemoveOrderByReference(readyOrder);
+                        _ = _serverService.SendPrivateMessage(readyOrder.Role.GRoleBase.Id, "Falha ao entregar meridiano. Entre em contato com a administração.");
+                        ordersToRemove.Add(readyOrder);
                         continue;
                     }
 
-                    _pendingMeridianOrders.RemoveOrderByReference(readyOrder);
+                    _pendingMeridianOrders.UpdateDeliveredStatus(readyOrder.IssuerRoleId, deliveredStatus: true);
+                    _logger.Write($"Successfully delivered for {readyOrder.Role.GRoleBase.Name}");
                 }
+
+                ordersToRemove.AddRange(_pendingMeridianOrders.GetDeliveredOrders());
+                ordersToRemove.ForEach(_pendingMeridianOrders.RemoveOrderByReference);
 
                 await Task.Delay(1000, stoppingToken);
             }
@@ -69,7 +73,7 @@ internal sealed class MeridianWorker : BackgroundService
             {
                 _logger.Write(e.ToString(), LogLevel.Error);
                 await Task.Delay(10_000, stoppingToken);
-            }            
+            }
         }
     }
 

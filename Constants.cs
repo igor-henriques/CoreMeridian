@@ -1,15 +1,16 @@
 ﻿namespace CoreMeridian;
 
-internal sealed record JapaneseLogIdentifiers
+internal sealed record LogIdentifier
 {
-    public const string LogoffLogId = "写入用户";
+    public const string Logoff = "rolelogout";
 }
 
-internal sealed record LogFileName
+internal sealed record LogFilePath
 {
     public const string World2Chat = "world2.chat";
     public const string World2Log = "world2.log";
     public const string World2FormatLog = "world2.formatlog";
+    public const string OutputLogFilePath = "./log.txt";
 }
 
 internal sealed record ChatTrigger
@@ -24,7 +25,7 @@ internal sealed record GameConstants
 
 internal sealed record MeridianItem
 {
-    public static string Id;
+    public static readonly string Id;
 
     static MeridianItem()
     {
