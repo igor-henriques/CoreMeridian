@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PWToolKit">
-      <HintPath>E:\PWToolKit-master\PWToolKit\bin\Release\net7.0\publish\win-x64\PWToolKit.dll</HintPath>
+      <HintPath>Properties\PWToolKit.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

@@ -15,5 +15,5 @@ public sealed record ServerConnection
     public string logsPath { get; init; }
 
     [JsonProperty("PW_VERSION")]
-    public PwVersion PwVersion { get; init; }
+    public PwVersion PwVersion { get; init; }   
 }

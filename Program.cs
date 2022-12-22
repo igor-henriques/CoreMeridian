@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 await Host.CreateDefaultBuilder()
     .ConfigureServices(services =>
     {

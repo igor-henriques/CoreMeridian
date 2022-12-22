@@ -7,6 +7,7 @@ internal sealed class ServerService : IServerService
     public ServerService(ServerConnection serverConnection)
     {
         this._serverConnection = serverConnection;
+        PWGlobal.UsedPwVersion = serverConnection.PwVersion;
     }
 
     public void SendPrivateMessage(int roleId, string message)

@@ -2,7 +2,7 @@
 
 internal sealed class ChatMessageFactory : IChatMessageFactory
 {
-    public ChatMessage CreateChatMessageFromLogString(string logMessage)
+    public ChatMessage CreateChatMessageFromLogString(string logMessage, Encoding encoding)
     {
         if (!logMessage.Contains("src=") &
             logMessage.Contains("src=-1") &
@@ -17,7 +17,7 @@ internal sealed class ChatMessageFactory : IChatMessageFactory
         if (!int.TryParse(Regex.Match(logMessage, @"src=([0-9]*)").Value.Replace("src=", ""), out int roleId))
             return default;
 
-        string text = Encoding.Unicode.GetString(Convert.FromBase64String(Regex.Match(logMessage, @"msg=([\s\S]*)").Value.Replace("msg=", "")));
+        string text = encoding.GetString(Convert.FromBase64String(Regex.Match(logMessage, @"msg=([\s\S]*)").Value.Replace("msg=", ""))).Replace("\n", null);
 
         var chatMessage = new ChatMessage
         {

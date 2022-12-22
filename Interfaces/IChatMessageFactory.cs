@@ -1,7 +1,6 @@
-﻿namespace CoreMeridian.Interfaces
+﻿namespace CoreMeridian.Interfaces;
+
+internal interface IChatMessageFactory
 {
-    internal interface IChatMessageFactory
-    {
-        ChatMessage CreateChatMessageFromLogString(string logMessage);
-    }
+    ChatMessage CreateChatMessageFromLogString(string logMessage, Encoding encoding);
 }

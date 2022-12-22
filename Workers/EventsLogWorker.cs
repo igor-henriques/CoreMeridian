@@ -29,7 +29,7 @@ internal sealed class EventsLogWorker : BackgroundService
         {
             try
             {
-                long currentFileSize = GetFileSize(_logFilePath);
+                long currentFileSize = FileMethods.GetFileSize(_logFilePath);
 
                 if (currentFileSize > _lastFileSize)
                 {

@@ -29,19 +29,19 @@ internal sealed class ChatLogWorker : BackgroundService
     {
         _logger.LogInformation($"Starting {nameof(ChatLogWorker)}");
 
-        while (stoppingToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                long currentFileSize = GetFileSize(_logFilePath);
-
+                long currentFileSize = FileMethods.GetFileSize(_logFilePath);
+                
                 if (currentFileSize > _lastFileSize)
                 {
                     var logLines = ReadTail(_logFilePath, UpdateLastFileSize(currentFileSize));
 
-                    var meridianoRequestsMessage = logLines
-                        .Where(line => line.Contains(ChatTrigger.MeridianoTrigger))
-                        .Select(_messageFactory.CreateChatMessageFromLogString);
+                    var meridianoRequestsMessage = logLines                        
+                        .Select(line => _messageFactory.CreateChatMessageFromLogString(line, Encoding.Default))
+                        .Where(message => message.Text.Contains(ChatTrigger.MeridianoTrigger));
 
                     foreach (var meridianoRequestMessage in meridianoRequestsMessage)
                     {
@@ -93,7 +93,7 @@ internal sealed class ChatLogWorker : BackgroundService
         fileStream.Seek(offset * -1, SeekOrigin.End);
 
         var array = new byte[offset];
-        fileStream.Read(array, 0, (int)offset);
+        fileStream.Read(array, 0, (int)offset);        
 
         return Encoding.Default.GetString(array)
                                .Split("\n")
