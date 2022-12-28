@@ -10,7 +10,7 @@ public sealed record LogoffRecord
         var logData = new LogoffRecord
         {
             RoleLogoffTime = DateTime.Now,
-            IdRoleLogoff = int.Parse(CompiledLogoffRegex.Regex.Match(log).Value.Replace("rolelogout:userid=", null).Trim())
+            IdRoleLogoff = int.Parse(CompiledLogoffRegex.Regex.Match(log).Value.Replace($"{LogIdentifier.Logoff}:roleid=", null).Trim())
         };
 
         return logData;

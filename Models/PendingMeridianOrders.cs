@@ -17,10 +17,13 @@ internal sealed record PendingMeridianOrders : IPendingMeridianOrders
     public void UpdateLogoffStatus(LogoffRecord logoffRecord)
     {
         foreach (var order in this.Orders)
+        {
             if (logoffRecord.IdRoleLogoff.Equals(order.IssuerRoleId))
+            {
                 order.IsLoggedOff = true;
-
-        _logger.Write($"Logoff notification received for player ID {logoffRecord.IdRoleLogoff}", LogLevel.Information);
+                _logger.Write($"Logoff notification received for player ID {logoffRecord.IdRoleLogoff}", LogLevel.Information);
+            }
+        }                    
     }
 
     public void UpdateLogoffStatus(IEnumerable<LogoffRecord> logoffRecords)

@@ -1,3 +1,9 @@
+Console.WriteLine("ELIMINANDO INSTÂNCIAS SECUNDÁRIAS DO COREMERIDIAN");
+var currentProcess = Process.GetCurrentProcess();
+var secondaryProcesses = Process.GetProcessesByName(currentProcess.ProcessName).Where(p => p.Id != currentProcess.Id);
+foreach (var process in secondaryProcesses)
+    process.Kill();
+
 await Host.CreateDefaultBuilder()
     .ConfigureServices(services =>
     {

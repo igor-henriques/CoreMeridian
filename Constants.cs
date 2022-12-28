@@ -2,7 +2,7 @@
 
 internal sealed record LogIdentifier
 {
-    public const string Logoff = "rolelogout";
+    public const string Logoff = "playerlogout";
 }
 
 internal sealed record LogFilePath

@@ -2,6 +2,12 @@
 
 internal static class FileMethods
 {
+    public static void EnsureFileExists(string filePath)
+    {
+        if (!File.Exists(filePath))
+            _ = File.Create(filePath);
+    }
+
     public static long GetFileSize(string fileName)
     {
         return new FileInfo(fileName).Length;

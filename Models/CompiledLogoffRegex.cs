@@ -2,5 +2,5 @@
 
 internal sealed class CompiledLogoffRegex
 {
-    public readonly static Regex Regex = new Regex(@"rolelogout:userid=([0-9]*)", RegexOptions.Compiled);
+    public readonly static Regex Regex = new Regex(@"playerlogout:roleid=([0-9]*)", RegexOptions.Compiled);
 }

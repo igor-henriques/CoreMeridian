@@ -23,8 +23,8 @@ internal sealed class ChatLogWorker : BackgroundService
         this._logger = logger;
 
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-        _lastFileSize = FileMethods.GetFileSize(_logFilePath);
+        FileMethods.EnsureFileExists(_logFilePath);
+        _lastFileSize = FileMethods.GetFileSize(_logFilePath);        
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
